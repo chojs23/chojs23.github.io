@@ -16,10 +16,10 @@ minimal_mistakes_skin: "dark" # "air", "aqua", "contrast", "dark", "dirt", "neon
 
 # Site Settings
 locale: "ko-KR"
-title: "neo blog"
+title: "Neo blog"
 title_separator: "-"
 subtitle: # site tagline that appears below site title in masthead
-name: "Neo"
+name: "chojs23"
 description: "Hi"
 url: "https://chojs23.github.io" #the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl: # the subpath of your site, e.g. "/blog"
@@ -105,11 +105,11 @@ author:
   avatar: # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio: "기록용 블로그입니다"
   location: "Korea"
-  email:
+  email: "chojs990222@gmail.com"
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
-      url: "chojs990222@gmail.com"
+      # url: "chojs990222@gmail.com"
     - label: "Website"
       icon: "fas fa-fw fa-link"
       # url: "https://your-website.com"
