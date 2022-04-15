@@ -1,7 +1,7 @@
 ---
 title: "JPA"
 layout: archive
-permalink: categories/JPA
+permalink: categories/jpa
 author_profile: true
 sidebar_main: true
 ---
