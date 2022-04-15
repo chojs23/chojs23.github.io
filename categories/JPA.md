@@ -6,6 +6,6 @@ author_profile: true
 sidebar_main: true
 ---
 
-스프링 모음
+JPA
 {% assign posts = site.categories.JPA %}
 {% for post in posts %} {% include archive-single.html type=page.entries_layout %} {% endfor %}
