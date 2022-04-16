@@ -1,5 +1,5 @@
 ---
-title: "스프링 Bean Validation"
+title: "Spring Bean Validation"
 excerpt:
 published: true
 categories:
