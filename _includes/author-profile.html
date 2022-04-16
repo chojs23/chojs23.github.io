@@ -240,7 +240,16 @@
         </li>
       {% endif %}
 
+      
+
       {% include author-profile-custom-links.html %}
     </ul>
   </div>
+  <div class="postSum">
+    {% assign sum = site.posts | size %}
+      <!--전체 글 수-->
+        📂 <span style="font-family:'Cafe24Oneprettynight';">전체 글 수</style> <span style="font-family:'Coming Soon';">{{sum}}</style> <span style="font-family:'Cafe24Oneprettynight';">개</style> 
+        {% include nav_list_main %}
+  </div>
+  
 </div>
