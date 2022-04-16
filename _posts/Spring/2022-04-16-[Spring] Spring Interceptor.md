@@ -1,5 +1,5 @@
 ---
-title: "Spring Interceptor"
+title: "[Spring] Interceptor"
 excerpt:
 published: true
 categories:

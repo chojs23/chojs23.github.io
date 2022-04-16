@@ -1,5 +1,5 @@
 ---
-title: "Spring Validator 사용"
+title: "[Spring] Validator 사용"
 excerpt:
 published: true
 categories:
