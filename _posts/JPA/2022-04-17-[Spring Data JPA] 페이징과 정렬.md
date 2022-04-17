@@ -68,6 +68,8 @@ public void paging() throws Exception {
 }
 ```
 
+<hr>
+
 ### 스프링 데이터 페이징과 정렬
 
 페이징과 정렬 파라미터
@@ -83,10 +85,16 @@ public void paging() throws Exception {
 - List (자바 컬렉션): 추가 count 쿼리 없이 결과만 반환
 
 페이징과 정렬 사용 예제
+
 Page<Member> findByUsername(String name, Pageable pageable); //count 쿼리 사용
+
 Slice<Member> findByUsername(String name, Pageable pageable); //count 쿼리 사용안함
+
 List<Member> findByUsername(String name, Pageable pageable); //count 쿼리 사용안함
+
 List<Member> findByUsername(String name, Sort sort);
+
+<hr>
 
 위의 순수 JPA로 페이징한 예시를 스프링 데이터 JPA 페이징으로 바꿔보자.
 
