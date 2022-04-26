@@ -32,11 +32,11 @@
         </li>
 
         <li>
-        <span class="nav__sub-title">JPA</span>
+        <span class="nav__sub-title">Spring DB</span>
             <ul>
                 {% for category in site.categories %}
                     {% if category[0] == "Spring DB" %}
-                        <li><a href="/categories/jpa" class="">Srping DB ({{category[1].size}})</a></li>
+                        <li><a href="/categories/springDb.md" class="">Srping DB ({{category[1].size}})</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
