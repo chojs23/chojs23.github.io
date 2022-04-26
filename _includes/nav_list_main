@@ -36,7 +36,7 @@
             <ul>
                 {% for category in site.categories %}
                     {% if category[0] == "SpringDB" %}
-                        <li><a href="/categories/springDB" class="">SrpingDB ({{category[1].size}})</a></li>
+                        <li><a href="/categories/springdb" class="">SrpingDB ({{category[1].size}})</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
