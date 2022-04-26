@@ -3,7 +3,7 @@ title: "[Spring DB] JDBC의 이해"
 excerpt:
 published: true
 categories:
-  - Spring DB
+  - SpringDB
 
 toc: true
 toc_sticky: true
