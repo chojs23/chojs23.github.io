@@ -181,3 +181,11 @@ public class WebConfig implements WebMvcConfigurer {
     //...
 }
 ```
+
+<script src="https://utteranc.es/client.js"
+        repo="chojs23/comments"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>

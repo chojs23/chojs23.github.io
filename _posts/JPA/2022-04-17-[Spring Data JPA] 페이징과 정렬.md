@@ -169,3 +169,11 @@ public interface Slice<T> extends Streamable<T> {
 Page<Member> page = memberRepository.findByAge(10, pageRequest);
 Page<MemberDto> dtoPage = page.map(m -> new MemberDto());
 ```
+
+<script src="https://utteranc.es/client.js"
+        repo="chojs23/comments"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>

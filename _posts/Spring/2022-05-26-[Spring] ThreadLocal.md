@@ -144,3 +144,11 @@ public class ThreadLocalServiceTest {
 7. 사용자B는 사용자A의 정보를 조회하게 된다.
 
 이런 문제를 예방하려면 사용자A의 요청이 끝날 때 쓰레드 로컬의 값을 ThreadLocal.remove() 를 통해서 꼭 제거해야 한다.
+
+<script src="https://utteranc.es/client.js"
+        repo="chojs23/comments"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>

@@ -130,3 +130,11 @@ ArgumentResolver 가 있다. 이 ArgumentResolver 들이 HTTP 메시지 컨버�
 
 응답의 경우 @ResponseBody 와 HttpEntity 를 처리하는 ReturnValueHandler 가 있다. 그리고
 여기에서 HTTP 메시지 컨버터를 호출해서 응답 결과를 만든다.
+
+<script src="https://utteranc.es/client.js"
+        repo="chojs23/comments"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>

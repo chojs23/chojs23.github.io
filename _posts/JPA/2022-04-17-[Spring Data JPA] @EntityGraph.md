@@ -52,8 +52,7 @@ JPQL 페치 조인
 List<Member> findMemberFetchJoin();
 ```
 
-스프링 데이터 JPA는 JPA가 제공하는 엔티티 그래프 기능을 편리하게 사용하게 도와준다. 이 기능을
-사용하면 JPQL 없이 페치 조인을 사용할 수 있다. (JPQL + 엔티티 그래프도 가능)
+스프링 데이터 JPA는 JPA가 제공하는 엔티티 그래프 기능을 편리하게 사용하게 도와준다. 이 기능을 사용하면 JPQL 없이 페치 조인을 사용할 수 있다. (JPQL + 엔티티 그래프도 가능)
 
 EntityGraph
 
@@ -75,3 +74,11 @@ EntityGraph 정리
 
 - 사실상 페치 조인(FETCH JOIN)의 간편 버전
 - LEFT OUTER JOIN 사용
+
+<script src="https://utteranc.es/client.js"
+        repo="chojs23/comments"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>

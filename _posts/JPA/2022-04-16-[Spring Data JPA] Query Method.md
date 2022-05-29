@@ -138,3 +138,11 @@ Optional<Member> findByUsername(String name); //단건 Optional
     > javax.persistence.NoResultException 예외가 발생하는데 개발자 입장에서 다루기가 상당히
     > 불편하다. 스프링 데이터 JPA는 단건을 조회할 때 이 예외가 발생하면 예외를 무시하고 대신에 null 을
     > 반환한다.
+
+<script src="https://utteranc.es/client.js"
+        repo="chojs23/comments"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>

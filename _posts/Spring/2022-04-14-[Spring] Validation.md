@@ -152,3 +152,11 @@ bindingResult, RedirectAttributes redirectAttributes)
 > javax.validation.@Valid 를 사용하려면 build.gradle 의존관계 추가가 필요하다.
 > implementation 'org.springframework.boot:spring-boot-starter-validation'
 > @Validated 는 스프링 전용 검증 애노테이션이고, @Valid 는 자바 표준 검증 애노테이션이다.
+
+<script src="https://utteranc.es/client.js"
+        repo="chojs23/comments"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>

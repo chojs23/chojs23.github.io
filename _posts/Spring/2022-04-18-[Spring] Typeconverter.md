@@ -290,3 +290,11 @@ WebMvcConfigurer 가 제공하는 addFormatters() 를 사용해서 추가하고 
 
 <br>
 <hr>
+
+<script src="https://utteranc.es/client.js"
+        repo="chojs23/comments"
+        issue-term="pathname"
+        theme="github-dark"
+        crossorigin="anonymous"
+        async>
+</script>
