@@ -1,5 +1,5 @@
 ---
-title: "[Spring] OSIV와 성능 최적화"
+title: "[JPA] OSIV와 성능 최적화"
 excerpt:
 published: true
 categories:
