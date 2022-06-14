@@ -3,7 +3,7 @@ title: "[Spring Data JPA] Query Method"
 excerpt:
 published: true
 categories:
-  - JPA
+    - JPA
 
 toc: true
 toc_sticky: true
@@ -128,21 +128,21 @@ Optional<Member> findByUsername(String name); //단건 Optional
 
 조회 결과가 많거나 없으면?
 
-- 컬렉션
-  - 결과 없음: 빈 컬렉션 반환
-- 단건 조회
-  - 결과 없음: null 반환
-  - 결과가 2건 이상: javax.persistence.NonUniqueResultException 예외 발생
-    > 참고: 단건으로 지정한 메서드를 호출하면 스프링 데이터 JPA는 내부에서 JPQL의
-    > Query.getSingleResult() 메서드를 호출한다. 이 메서드를 호출했을 때 조회 결과가 없으면
-    > javax.persistence.NoResultException 예외가 발생하는데 개발자 입장에서 다루기가 상당히
-    > 불편하다. 스프링 데이터 JPA는 단건을 조회할 때 이 예외가 발생하면 예외를 무시하고 대신에 null 을
-    > 반환한다.
+-   컬렉션
+    -   결과 없음: 빈 컬렉션 반환
+-   단건 조회
+    -   결과 없음: null 반환
+    -   결과가 2건 이상: javax.persistence.NonUniqueResultException 예외 발생
+        > 참고: 단건으로 지정한 메서드를 호출하면 스프링 데이터 JPA는 내부에서 JPQL의
+        > Query.getSingleResult() 메서드를 호출한다. 이 메서드를 호출했을 때 조회 결과가 없으면
+        > javax.persistence.NoResultException 예외가 발생하는데 개발자 입장에서 다루기가 상당히
+        > 불편하다. 스프링 데이터 JPA는 단건을 조회할 때 이 예외가 발생하면 예외를 무시하고 대신에 null 을
+        > 반환한다.
 
 <script src="https://utteranc.es/client.js"
         repo="chojs23/comments"
         issue-term="pathname"
-        theme="github-dark"
+        theme="github-light"
         crossorigin="anonymous"
         async>
 </script>

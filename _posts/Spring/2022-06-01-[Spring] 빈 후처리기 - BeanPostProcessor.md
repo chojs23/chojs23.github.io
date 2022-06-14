@@ -3,9 +3,9 @@ title: "[Spring] 빈 후처리기 - BeanPostProcessor"
 excerpt:
 published: true
 categories:
-  - Spring
+    - Spring
 tags:
-  - [Spring]
+    - [Spring]
 
 toc: true
 toc_sticky: true
@@ -173,7 +173,7 @@ PackageLogTraceProxyPostProcessor 는 원본 객체를 프록시 객체로 변�
 <script src="https://utteranc.es/client.js"
         repo="chojs23/comments"
         issue-term="pathname"
-        theme="github-dark"
+        theme="github-light"
         crossorigin="anonymous"
         async>
 </script>

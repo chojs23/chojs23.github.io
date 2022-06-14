@@ -3,7 +3,7 @@ title: "[Spring Data JPA] 스프링 데이터 JPA 구현체 분석"
 excerpt:
 published: true
 categories:
-  - JPA
+    - JPA
 
 toc: true
 toc_sticky: true
@@ -109,7 +109,7 @@ public class Item implements Persistable<String> {
 <script src="https://utteranc.es/client.js"
         repo="chojs23/comments"
         issue-term="pathname"
-        theme="github-dark"
+        theme="github-light"
         crossorigin="anonymous"
         async>
 </script>

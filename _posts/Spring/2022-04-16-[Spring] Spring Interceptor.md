@@ -3,9 +3,9 @@ title: "[Spring] Interceptor"
 excerpt:
 published: true
 categories:
-  - Spring
+    - Spring
 tags:
-  - [Spring]
+    - [Spring]
 
 toc: true
 toc_sticky: true
@@ -63,12 +63,12 @@ public interface HandlerInterceptor {
 
 정상 흐름
 
-- preHandle : 컨트롤러 호출 전에 호출된다. (더 정확히는 핸들러 어댑터 호출 전에 호출된다.)
-  - preHandle 의 응답값이 true 이면 다음으로 진행하고, false 이면 더는 진행하지 않는다. false
-    인 경우 나머지 인터셉터는 물론이고, 핸들러 어댑터도 호출되지 않는다. 그림에서 1번에서 끝이
-    나버린다.
-- postHandle : 컨트롤러 호출 후에 호출된다. (더 정확히는 핸들러 어댑터 호출 후에 호출된다.)
-- afterCompletion : 뷰가 렌더링 된 이후에 호출된다.
+-   preHandle : 컨트롤러 호출 전에 호출된다. (더 정확히는 핸들러 어댑터 호출 전에 호출된다.)
+    -   preHandle 의 응답값이 true 이면 다음으로 진행하고, false 이면 더는 진행하지 않는다. false
+        인 경우 나머지 인터셉터는 물론이고, 핸들러 어댑터도 호출되지 않는다. 그림에서 1번에서 끝이
+        나버린다.
+-   postHandle : 컨트롤러 호출 후에 호출된다. (더 정확히는 핸들러 어댑터 호출 후에 호출된다.)
+-   afterCompletion : 뷰가 렌더링 된 이후에 호출된다.
 
 스프링 인터셉터 예외 상황
 ![Interceptor-exception](../../images/interceptor-exception.PNG)
@@ -185,7 +185,7 @@ public class WebConfig implements WebMvcConfigurer {
 <script src="https://utteranc.es/client.js"
         repo="chojs23/comments"
         issue-term="pathname"
-        theme="github-dark"
+        theme="github-light"
         crossorigin="anonymous"
         async>
 </script>

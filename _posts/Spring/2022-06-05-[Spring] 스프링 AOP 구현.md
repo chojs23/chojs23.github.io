@@ -3,9 +3,9 @@ title: "[Spring] 스프링 AOP 구현"
 excerpt:
 published: true
 categories:
-  - Spring
+    - Spring
 tags:
-  - [Spring]
+    - [Spring]
 
 toc: true
 toc_sticky: true
@@ -238,10 +238,10 @@ public class AopTest {
 
 트랜잭션 기능은 보통 다음과 같이 동작한다.
 
-- 핵심 로직 실행 직전에 트랜잭션을 시작
-- 핵심 로직 실행
-- 핵심 로직 실행에 문제가 없으면 커밋
-- 핵심 로직 실행에 예외가 발생하면 롤백
+-   핵심 로직 실행 직전에 트랜잭션을 시작
+-   핵심 로직 실행
+-   핵심 로직 실행에 문제가 없으면 커밋
+-   핵심 로직 실행에 예외가 발생하면 롤백
 
 AspectV3
 
@@ -473,7 +473,7 @@ public class AopTest {
   <script src="https://utteranc.es/client.js"
           repo="chojs23/comments"
           issue-term="pathname"
-          theme="github-dark"
+          theme="github-light"
           crossorigin="anonymous"
           async>
   </script>

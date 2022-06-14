@@ -3,9 +3,9 @@ title: "[Spring] 스프링 AOP 어드바이스 종류"
 excerpt:
 published: true
 categories:
-  - Spring
+    - Spring
 tags:
-  - [Spring]
+    - [Spring]
 
 toc: true
 toc_sticky: true
@@ -115,7 +115,7 @@ public void doBefore(JoinPoint joinPoint) {
   <script src="https://utteranc.es/client.js"
           repo="chojs23/comments"
           issue-term="pathname"
-          theme="github-dark"
+          theme="github-light"
           crossorigin="anonymous"
           async>
   </script>

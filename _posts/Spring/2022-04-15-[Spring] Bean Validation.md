@@ -3,9 +3,9 @@ title: "[Spring] Bean Validation"
 excerpt:
 published: true
 categories:
-  - Spring
+    - Spring
 tags:
-  - [Spring]
+    - [Spring]
 
 toc: true
 toc_sticky: true
@@ -103,8 +103,8 @@ LocalValidatorFactoryBean 을 글로벌 Validator로 등록한다. 이 Validator
 검증 순서
 
 1. @ModelAttribute 각각의 필드에 타입 변환 시도
-   1. 성공하면 다음으로
-   2. 실패하면 typeMismatch 로 FieldError 추가
+    1. 성공하면 다음으로
+    2. 실패하면 typeMismatch 로 FieldError 추가
 2. Validator 적용
 
 > 바인딩에 성공한 필드만 Bean Validation 적용
@@ -159,25 +159,25 @@ Max={0}, 최대 {1}
 
 **등록시 기존 요구사항**
 
-- 타입 검증
-  - 가격, 수량에 문자가 들어가면 검증 오류 처리
-- 필드 검증
-  - 상품명: 필수, 공백X
-  - 가격: 1000원 이상, 1백만원 이하
-  - 수량: 최대 9999
-- 특정 필드의 범위를 넘어서는 검증
-  - 가격 \* 수량의 합은 10,000원 이상
-    <br>
+-   타입 검증
+    -   가격, 수량에 문자가 들어가면 검증 오류 처리
+-   필드 검증
+    -   상품명: 필수, 공백X
+    -   가격: 1000원 이상, 1백만원 이하
+    -   수량: 최대 9999
+-   특정 필드의 범위를 넘어서는 검증
+    -   가격 \* 수량의 합은 10,000원 이상
+        <br>
 
 **수정시 요구사항**
 
-- 등록시에는 quantity 수량을 최대 9999까지 등록할 수 있지만 수정시에는 수량을 무제한으로 변경할 수 있다.
-- 등록시에는 id 에 값이 없어도 되지만, 수정시에는 id 값이 필수이다.
+-   등록시에는 quantity 수량을 최대 9999까지 등록할 수 있지만 수정시에는 수량을 무제한으로 변경할 수 있다.
+-   등록시에는 id 에 값이 없어도 되지만, 수정시에는 id 값이 필수이다.
 
 이러한 문제를 해결하기 위해선 2가지 방법이있다.
 
-- Item을 직접 사용하지 않고, ItemSaveForm, ItemUpdateForm 같은 폼 전송을 위한 별도의 모델 객체를 만들어서 사용한다.
-- BeanValidation의 groups 기능을 사용한다.
+-   Item을 직접 사용하지 않고, ItemSaveForm, ItemUpdateForm 같은 폼 전송을 위한 별도의 모델 객체를 만들어서 사용한다.
+-   BeanValidation의 groups 기능을 사용한다.
 
 > groups 기능을 사용해서 등록과 수정시에 각각 다르게 검증을 할 수 있다. 그런데 groups 기능을 사용하니 Item 은 물론이고, 전반적으로 복잡도가 올라간다. 사실 groups 기능은 실제 잘 사용되지는 않는데, 그 이유는 주로 등록용 폼 객체와 수정용 폼 객체를 분리해서 사용하기 때문이다.
 
@@ -288,9 +288,9 @@ POST http://localhost:8080/validation/api/items/add
 
 API의 경우 3가지 경우를 나누어 생각해야 한다.
 
-- 성공 요청: 성공
-- 실패 요청: JSON을 객체로 생성하는 것 자체가 실패함
-- 검증 오류 요청: JSON을 객체로 생성하는 것은 성공했고, 검증에서 실패함
+-   성공 요청: 성공
+-   실패 요청: JSON을 객체로 생성하는 것 자체가 실패함
+-   검증 오류 요청: JSON을 객체로 생성하는 것은 성공했고, 검증에서 실패함
 
 실패 요청
 
@@ -386,7 +386,7 @@ return bindingResult.getAllErrors(); 는 ObjectError 와 FieldError 를 반환�
 <script src="https://utteranc.es/client.js"
         repo="chojs23/comments"
         issue-term="pathname"
-        theme="github-dark"
+        theme="github-light"
         crossorigin="anonymous"
         async>
 </script>

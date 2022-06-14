@@ -3,9 +3,9 @@ title: "[Spring] Typeconverter"
 excerpt:
 published: true
 categories:
-  - Spring
+    - Spring
 tags:
-  - [Spring]
+    - [Spring]
 
 toc: true
 toc_sticky: true
@@ -57,11 +57,11 @@ HTTP 쿼리 스트링으로 전달하는 data=10 부분에서 10은 숫자 10이
 
 스프링의 타입 변환 적용 예
 
-- 스프링 MVC 요청 파라미터
-  - @RequestParam , @ModelAttribute , @PathVariable
-- @Value 등으로 YML 정보 읽기
-- XML에 넣은 스프링 빈 정보를 변환
-- 뷰를 렌더링 할 때
+-   스프링 MVC 요청 파라미터
+    -   @RequestParam , @ModelAttribute , @PathVariable
+-   @Value 등으로 YML 정보 읽기
+-   XML에 넣은 스프링 빈 정보를 변환
+-   뷰를 렌더링 할 때
 
 <hr>
 
@@ -294,7 +294,7 @@ WebMvcConfigurer 가 제공하는 addFormatters() 를 사용해서 추가하고 
 <script src="https://utteranc.es/client.js"
         repo="chojs23/comments"
         issue-term="pathname"
-        theme="github-dark"
+        theme="github-light"
         crossorigin="anonymous"
         async>
 </script>

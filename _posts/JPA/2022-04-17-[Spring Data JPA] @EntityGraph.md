@@ -3,7 +3,7 @@ title: "[Spring Data JPA] @EntityGraph"
 excerpt:
 published: true
 categories:
-  - JPA
+    - JPA
 
 toc: true
 toc_sticky: true
@@ -72,13 +72,13 @@ List<Member> findByUsername(String username)
 
 EntityGraph 정리
 
-- 사실상 페치 조인(FETCH JOIN)의 간편 버전
-- LEFT OUTER JOIN 사용
+-   사실상 페치 조인(FETCH JOIN)의 간편 버전
+-   LEFT OUTER JOIN 사용
 
 <script src="https://utteranc.es/client.js"
         repo="chojs23/comments"
         issue-term="pathname"
-        theme="github-dark"
+        theme="github-light"
         crossorigin="anonymous"
         async>
 </script>

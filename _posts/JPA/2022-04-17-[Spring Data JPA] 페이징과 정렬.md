@@ -3,7 +3,7 @@ title: "[Spring Data JPA] 페이징과 정렬"
 excerpt:
 published: true
 categories:
-  - JPA
+    - JPA
 
 toc: true
 toc_sticky: true
@@ -18,9 +18,9 @@ last_modified_at: 2022-04-17
 
 먼저 순수 JPA에서 페이징을 어떻게 하는지 알아보자.
 
-- 검색 조건: 나이가 10살
-- 정렬 조건: 이름으로 내림차순
-- 페이징 조건: 첫 번째 페이지, 페이지당 보여줄 데이터는 3건
+-   검색 조건: 나이가 10살
+-   정렬 조건: 이름으로 내림차순
+-   페이징 조건: 첫 번째 페이지, 페이지당 보여줄 데이터는 3건
 
 JPA 페이징 리포지토리
 
@@ -74,15 +74,15 @@ public void paging() throws Exception {
 
 페이징과 정렬 파라미터
 
-- org.springframework.data.domain.Sort : 정렬 기능
-- org.springframework.data.domain.Pageable : 페이징 기능 (내부에 Sort 포함)
+-   org.springframework.data.domain.Sort : 정렬 기능
+-   org.springframework.data.domain.Pageable : 페이징 기능 (내부에 Sort 포함)
 
 특별한 반환 타입
 
-- org.springframework.data.domain.Page : 추가 count 쿼리 결과를 포함하는 페이징
-- org.springframework.data.domain.Slice : 추가 count 쿼리 없이 다음 페이지만 확인 가능
-  (내부적으로 limit + 1조회)
-- List (자바 컬렉션): 추가 count 쿼리 없이 결과만 반환
+-   org.springframework.data.domain.Page : 추가 count 쿼리 결과를 포함하는 페이징
+-   org.springframework.data.domain.Slice : 추가 count 쿼리 없이 다음 페이지만 확인 가능
+    (내부적으로 limit + 1조회)
+-   List (자바 컬렉션): 추가 count 쿼리 없이 결과만 반환
 
 페이징과 정렬 사용 예제
 
@@ -173,7 +173,7 @@ Page<MemberDto> dtoPage = page.map(m -> new MemberDto());
 <script src="https://utteranc.es/client.js"
         repo="chojs23/comments"
         issue-term="pathname"
-        theme="github-dark"
+        theme="github-light"
         crossorigin="anonymous"
         async>
 </script>

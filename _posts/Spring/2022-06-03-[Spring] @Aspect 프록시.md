@@ -3,9 +3,9 @@ title: "[Spring] @Aspect 프록시"
 excerpt:
 published: true
 categories:
-  - Spring
+    - Spring
 tags:
-  - [Spring]
+    - [Spring]
 
 toc: true
 toc_sticky: true
@@ -55,12 +55,12 @@ public class LogTraceAspect {
 }
 ```
 
-- @Aspect : 애노테이션 기반 프록시를 적용할 때 필요하다.
-- @Around("execution(_ hello.proxy.app.._(..))")
-  - @Around 의 값에 포인트컷 표현식을 넣는다. 표현식은 AspectJ 표현식을 사용한다.
-  - @Around 의 메서드는 어드바이스( Advice )가 된다.
-- ProceedingJoinPoint joinPoint : 어드바이스에서 살펴본 MethodInvocation invocation 과 유사한 기능이다. 내부에 실제 호출 대상, 전달 인자, 그리고 어떤 객체와 어떤 메서드가 호출되었는지 정보가 포함되어 있다.
-- joinPoint.proceed() : 실제 호출 대상( target )을 호출한다.
+-   @Aspect : 애노테이션 기반 프록시를 적용할 때 필요하다.
+-   @Around("execution(_ hello.proxy.app.._(..))")
+    -   @Around 의 값에 포인트컷 표현식을 넣는다. 표현식은 AspectJ 표현식을 사용한다.
+    -   @Around 의 메서드는 어드바이스( Advice )가 된다.
+-   ProceedingJoinPoint joinPoint : 어드바이스에서 살펴본 MethodInvocation invocation 과 유사한 기능이다. 내부에 실제 호출 대상, 전달 인자, 그리고 어떤 객체와 어떤 메서드가 호출되었는지 정보가 포함되어 있다.
+-   joinPoint.proceed() : 실제 호출 대상( target )을 호출한다.
 
 ```
 @Configuration
@@ -94,7 +94,7 @@ BeanFactoryAspectJAdvisorsBuilder 클래스이다. @Aspect 의 정보를 기반�
 <script src="https://utteranc.es/client.js"
         repo="chojs23/comments"
         issue-term="pathname"
-        theme="github-dark"
+        theme="github-light"
         crossorigin="anonymous"
         async>
 </script>

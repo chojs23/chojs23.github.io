@@ -3,9 +3,9 @@ title: "[Spring] AOP(Aspect-Oriented Programming)"
 excerpt:
 published: true
 categories:
-  - Spring
+    - Spring
 tags:
-  - [Spring]
+    - [Spring]
 
 toc: true
 toc_sticky: true
@@ -30,9 +30,9 @@ AOP의 대표적인 구현으로 AspectJ 프레임워크가 있다.
 
 AOP를 사용하면 핵심 기능과 부가 기능이 코드상 완전히 분리되어서 관리된다.AOP를 사용할 때 부가 기능 로직은 세 가지 방식으로 실제 로직에 추가된다.
 
-- 컴파일 시점
-- 클래스 로딩 시점
-- 런타임 시점(프록시)
+-   컴파일 시점
+-   클래스 로딩 시점
+-   런타임 시점(프록시)
 
 <hr>
 
@@ -66,21 +66,21 @@ AspectJ 컴파일러는 Aspect를 확인해서 해당 클래스가 적용 대상
 
 AOP는 지금까지 학습한 메서드 실행 위치 뿐만 아니라 다음과 같은 다양한 위치에 적용할 수 있다.
 
-- 적용 가능 지점(조인 포인트): 생성자, 필드 값 접근, static 메서드 접근, 메서드 실행
+-   적용 가능 지점(조인 포인트): 생성자, 필드 값 접근, static 메서드 접근, 메서드 실행
 
-  - 이렇게 AOP를 적용할 수 있는 지점을 조인 포인트(Join point)라 한다.
+    -   이렇게 AOP를 적용할 수 있는 지점을 조인 포인트(Join point)라 한다.
 
-- 프록시 방식을 사용하는 스프링 AOP는 메서드 실행 지점에만 AOP를 적용할 수 있다.
-  - 프록시는 메서드 오버라이딩 개념으로 동작한다. 따라서 생성자나 static 메서드, 필드 값 접근에는 프록시 개념이 적용될 수 없다.
-  - 프록시를 사용하는 **스프링 AOP의 조인 포인트는 메서드 실행으로 제한**된다.
-- 프록시 방식을 사용하는 스프링 AOP는 스프링 컨테이너가 관리할 수 있는 **스프링 빈에만 AOP를 적용**할 수 있다.
+-   프록시 방식을 사용하는 스프링 AOP는 메서드 실행 지점에만 AOP를 적용할 수 있다.
+    -   프록시는 메서드 오버라이딩 개념으로 동작한다. 따라서 생성자나 static 메서드, 필드 값 접근에는 프록시 개념이 적용될 수 없다.
+    -   프록시를 사용하는 **스프링 AOP의 조인 포인트는 메서드 실행으로 제한**된다.
+-   프록시 방식을 사용하는 스프링 AOP는 스프링 컨테이너가 관리할 수 있는 **스프링 빈에만 AOP를 적용**할 수 있다.
 
 ![aop4](../../images/aop4.PNG)
 
   <script src="https://utteranc.es/client.js"
           repo="chojs23/comments"
           issue-term="pathname"
-          theme="github-dark"
+          theme="github-light"
           crossorigin="anonymous"
           async>
   </script>
