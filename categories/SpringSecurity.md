@@ -6,6 +6,6 @@ author_profile: true
 sidebar_main: true
 ---
 
-SpringCloud MSA
+SpringSecurity
 {% assign posts = site.categories.SpringSecurity %}
 {% for post in posts %} {% include archive-single.html type=page.entries_layout %} {% endfor %}
