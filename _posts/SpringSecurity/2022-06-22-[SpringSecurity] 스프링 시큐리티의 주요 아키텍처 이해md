@@ -1,0 +1,597 @@
+---
+title: "[SpringSecurity] 스프링 시큐리티의 주요 아키텍처 이해"
+excerpt:
+published: true
+categories:
+    - SpringSecurity
+
+toc: true
+toc_sticky: true
+
+date: 2022-06-22
+last_modified_at: 2022-06-22
+---
+
+# 스프링 시큐리티 주요 아키텍처
+
+## DelegatingFilterProxy, FilterChainProxy
+
+![1](../../images/msa/스크린샷%202022-06-19%20오후%209.38.09.png)
+
+서블릿 필터는 스프링에서 정의 된 빈을 주입해서 사용할 수 없다.
+
+Spring Bean은 스프링 컨테이너에서 생성및 관리하는 컴포넌트들이고, ServletFilter는 서블릿 컨테이너에서 생성및 관리하는 필터들이기 때문에 서로 실행되는 위치가 다르기 때문이다. 하지만, 서블릿 필터와 스프링 빈 간에 호출을 하고 사용을 해야하는 경우가 생기는데, 이 때 서블릿 필터는 DelegatingFilterProxy 클래스를사용해서 스프링 빈에게 요청을 위임하면 스프링 빈에서 구현한 서블릿 필터를 이용해 책임을 수행하게 된다.
+
+특정한 이름을 가진 스프링 빈을 찾아 그 빈에게 요청을 위임
+
+-   springSecurityFilterChain 이름으로 생성된 빈을 ApplicationContext 에서 찾아 요청을 위임
+-   실제 보안처리를 하지 않음
+
+서블릿 필터에서 요청에 대한 자원의 접근 전/후로 동작을 수행하는데, 서블릿 필터는 서블릿 컨테이너에서 관리되기에 스프링 빈들을 사용할 수 없다. 하지만, 스프링 시큐리티는 모든 요청에 대한 인증및 인가와 같은 보안 처리를 필터 기반으로 처리하고 있는데, 필터에서도 스프링의 기술(스프링 빈)을 사용하고 싶은 요구사항이 생긴다.
+그래서 스프링에서도 스프링 빈을 만들어 서블릿 필터로 빈을 구현했는데, 이 스프링 빈이 springSecurityFilterChain이다. 하지만, 서블릿 필터에서는 스프링 빈들을 주입하거나 사용할 수 없는데, 이러한 필터와 빈을 연결해줄 수 있는 클래스가 DelegatingFilterProxy이다. 이 클래스는 서블릿 필터인데, 요청을 받아서 스프링에서 관리하는 필터에게 요청을 위임하는 역할을 맡고 있다.
+
+**FilterChainProxy**
+
+springSecurityFilterChain 의 이름으로 생성되는 필터 빈
+DelegatingFilterProxy 으로 부터 요청을 위임 받고 실제 보안 처리
+스프링 시큐리티 초기화 시 생성되는 필터들을 관리하고 제어
+
+-   스프링 시큐리티가 기본적으로 생성하는 필터
+-   설정 클래스에서 API 추가 시 생성되는 필터
+
+사용자의 요청을 필터 순서대로 호출하여 전달
+사용자정의 필터를 생성해서 기존의 필터 전.후로 추가 가능
+
+-   필터의 순서를 잘 정의
+
+마지막 필터까지 인증 및 인가 예외가 발생하지 않으면 보안 통과
+
+![1](../../images/msa/스크린샷%202022-06-19%20오후%209.46.26.png)
+
+1. 사용자가 자원 요청
+2. Servlet Container의 필터들이 처리를 하게되고 그 중 DelegatingFilterProxy가 요청을 받게 될 경우 자신이 요청받은 요청객체를 delegate request로 요청 위임을 한다.
+3. 요청 객체는 특정한 필터(springSecurityFilterChain) 에서 받게 된다.
+    - DelegatingFilterProxy가 필터로 등록 될 때 springSecurityFilterChain 동일한 이름으로 등록하여 내부적으로 해당 이름을 가진 객체를 찾는 것.
+    - springSecurityFilterChain 필터를 가지고 있는 빈이 FilterChainProxy이다.
+4. FilterChainProxy에서는 자신이 가진 각각의 필터들을 차례대로 수행하며 보안처리를 수행한다.
+5. 보안처리가 완료되면 최종 자원에 요청을 전달하여 다음 로직이 수행된다.
+
+## 필터 초기화와 다중 보안 설정
+
+![1](../../images/msa/스크린샷%202022-06-19%20오후%209.54.56.png)
+
+설정클래스 별로 보안 기능이 각각 작동
+설정클래스 별로 RequestMatcher 설정
+
+-   http.antmatcher("/admin/\*\*")
+
+설정 클래스 별로 필터가 생성
+FilterChainProxy가 각 필터들을 리스트 형태로 가지고 있음
+요청에 따라 RequestMatcher와 매칭되는 필터가 작동하도록 함.
+
+![1](../../images/msa/스크린샷%202022-06-19%20오후%2010.04.31.png)
+
+1. GET방식으로 /admin 주소로 자원 요청
+2. FilterChainProxy에서 요청을받아 요청을 처리할 필터를 선택
+3. 요청 URL과 matches를 하여 true가되는 Filter를 선택해야한다.
+
+-   FilterChainProxy가 저정하고있는 각각의 SecurityConfig 객체들에서 RequestMacher의 정보와 매치되는 정보를 찾는다.
+
+4. 일치하는 객체의 필터를 수행하여 인증/인가 처리를 한다.
+
+```
+@Slf4j
+@Configuration
+@EnableWebSecurity
+@Order(0)
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    UserDetailsService userDetailsService;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication().withUser("user").password("{noop}1111").roles("USER");
+        auth.inMemoryAuthentication().withUser("sys").password("{noop}1111").roles("SYS", "USER");
+        auth.inMemoryAuthentication().withUser("admin").password("{noop}1111").roles("ADMIN", "SYS", "USER");
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .antMatcher("/admin/**")
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+                .httpBasic();
+
+    }
+}
+
+@Configuration
+@Order(1)
+class SecurityConfig2 extends WebSecurityConfigurerAdapter {
+
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                .anyRequest().permitAll()
+                .and()
+                .formLogin();
+    }
+}
+```
+
+![1](../../images/msa/스크린샷%202022-06-19%20오후%2010.04.51.png)
+
+## Authentication
+
+Authentication 인증객체란 당신이 누구인지 증명하는 것
+
+사용자의 인증 정보를 저장하는 토큰 개념으로 사용한다.
+인증 시 id와 password를 담고 인증 검증을 위해 전달되어 사용된다.
+인증 후 최종 인증 결과(user 객체, 권한 정보)를 담고 SecurityContext 에 저장되어 전역적으로 참조가 가능하다.
+
+```
+Authentication authentication =
+	SecurityContexHolder.getContext().getAuthentication();
+```
+
+Authentication 객체의 구조
+
+1. principal: 사용자 아이디 혹은 User객체를 저장
+2. credentials: 사용자 비밀번호
+3. authorities: 인증된 사용자의 권한 목록
+4. details: 인증 부가 정보
+5. Authenticated: 인증 여부(Bool)
+
+![1](../../images/msa/스크린샷%202022-06-19%20오후%2010.20.33.png)
+
+1. 사용자가 로그인을 시도(username + password 입력 및 전달)
+2. usernamePasswordAuthenticationFilter(인증필터)가 요청정보를 받아서 정보 추출을 하여 인증객체 (Authentication)을 생성한다.
+3. AuthenticationManager가 인증객체를 가지고 인증처리를 수행한다.
+   → 인증이 실패하게 되면 예외 발생.
+4. 인증 성공 후 Authentication 인증객체를 만들어서 내부의 Principal, Credentials, Authorities, Authenticated 들을 채워넣는다.
+5. SecurityContextHolder객체 안의 SecurityContext에 저장한다.
+   → 인증객체를 전역적으로 사용할 수 있게 된다.
+
+SecurityContextHolder라는 전역 객체 안에 SecurityContext에 인증 객체를 저장하는데, 이 SecurityContextHolder는 ThreadLocal에 저장되기 때문에 각기 다른 쓰레드별로 다른 SecurityContextHolder 인스턴스를 가지고 있어서 사용자 별로 각기 다른 인증 객체를 가질 수 있다.
+
+## SecurityContextHolder, SecurityContext
+
+**SecurityContext**
+
+• Authentication 객체가 저장되는 보관소로 필요 시 언제든지 Authentication 객체를 꺼내어 쓸 수 있도록 제공되는 클래스
+• ThreadLocal 에 저장되어 아무 곳에서나 참조가 가능하도록 설계함
+• 인증이 완료되면 HttpSession 에 저장되어 어플리케이션 전반에 걸쳐 전역적인 참조가 가능하다
+
+**SecurityContextHolder**
+• SecurityContext 객체 저장 방식
+
+-   MODE_THREADLOCAL : 스레드당 SecurityContext 객체를 할당, 기본값
+-   MODE_INHERITABLETHREADLOCAL : 메인 스레드와 자식 스레드에 관하여 동일한 SecurityContext 를 유지
+-   MODE_GLOBAL : 응용 프로그램에서 단 하나의 SecurityContext를 저장한다
+
+• SecurityContextHolder.clearContext() : SecurityContext 기존 정보 초기화
+
+• Authentication authentication = SecurityContextHolder.getContext().getAuthentication()
+
+![1](../../images/msa/스크린샷%202022-06-19%20오후%2011.16.26.png)
+
+1. Login을 사용자가 시도
+2. Server가 요청을 받아서 Thread를 생성 (ThreadLocal 할당)
+3. thread가 인증 처리 시도
+   → 인증 객체(Authentication) 생성
+4. (인증 실패) SecurityContextHolder.clearContext() 인증객체 초기화
+5. (인증 성공) SecurityContextHolder안의 SecurityContext에 인증객체(Authentication)저장
+   → ThreadLocal이 SecurityContextHolder를 담고 있는 것이다.
+6. SecurityContext에서 최종적으로 HttpSession에 저장이 된다.
+   (SPRING_SECURITY_CONTEXT라는 이름으로 저장된다.)
+
+기본전략::MODE_THREADLOCAL
+
+```
+@RestController
+public class SecurityController {
+
+    @GetMapping("/")
+    public String index(HttpSession session){
+        Authentication authentication = SecurityContextHolder.getContext()
+																											.getAuthentication();
+
+        SecurityContext context = (SecurityContext) session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+        Authentication authentication1 = context.getAuthentication();
+        return "home";
+    }
+
+    @GetMapping("/thread")
+    public String thread(){
+        new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        Authentication authentication =
+																					SecurityContextHolder.getContext()
+																												.getAuthentication();
+                    }
+                }
+        ).start();
+        return "thread";
+    }
+}
+```
+
+main 스레드가 아닌 새로만든 스레드에서 인증객체를 조회하면 null 이 나온다. 따라서 스레드마다 SecurityContext가 공유되지 않는것을 확인할 수 있다.
+
+MODE_INHERITABLETHREADLOCAL
+
+```
+protected void configure(HttpSecurity http) throws Exception {
+    http
+            .authorizeRequests()
+            .anyRequest().permitAll()
+            .and()
+            .formLogin();
+    SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+}
+...
+/**
+ * 이하 Controller 로직은 동일하다.
+ */
+```
+
+새로만든 스레드에서 인증객체를 조회하면 main 스레드(부모스레드)에서의 인증객체와 동일한 객체임을 확인할 수 있다.
+
+## SecurityContextPersistenceFilter
+
+SecurityContext 객체의 생성, 저장, 조회
+
+익명 사용자
+새로운 SecurityContext 객체를 생성하여 SecurityContextHolder에 저장한다.
+AnonymouseAuthenticationFilter에서 AnonymousAuthenticationToken 객체를 SecurityContext에 저장한다.
+
+인증 시
+새로운 SecurityContext객체를 생성하여 SecurityContextHolder에 저장한다
+UsernamePasswordAuthenticationFilter에서 인증 성공 후 SecurityContext 에 UsernamePasswordAuthentication 객체를 SecurityContext에 저장한다.
+인증이 최종 완료되면 Session 에 SecurityContext를 저장한다.
+
+인증 후
+Session에서 SecurityContext 꺼내어 SecurityContextHolder에서 저장한다.
+SecurityContext안에 Authentication 객체가 존재하면 계속 인증을 유지한다.
+
+최종 응답 시 공통
+SecurityContextHolder안의 SecurityContext객체에서 보관하던 인증정보를 반드시 초기화 해줘야 한다.
+SecurityContextHolder.clearContext() 메서드를 호출해 인증 정보를 초기화 한다.
+
+![1](../../images/msa/스크린샷%202022-06-20%20오후%208.15.00.png)
+
+1. 사용자가 Request 요청
+2. SecurityContextPersistenceFilter는 매 번 요청마다 수행된다.
+3. SecurityContextPersistenceFilter내부적으로 HttpSecurityContextRepository 가 로직 수행
+   → HttpSecurityContextRepository: SecurityContext 객체를 생성, 조회 하는 역할을 하는 클래스
+   a. (인증 전)
+
+    1. 새로운 컨텍스트 생성(SecurityContextHolder)
+       → 이 때는 SecurityContext 객체는 null 이다
+    2. 그 다음 필터로 이동한다(chain.doFIlter)
+    3. 인증 필터(AuthFilter)가 인증을 처리 한다.
+    4. 인증이 완료되면 인증객체(Authentication)생성 후 SecurityContext 객체안에 저장된다.
+    5. 다음 필터 수행(chain.doFilter)
+    6. Client에게 응답하는 시점에서 Session에 SecurityContext저장
+       → SecurityContextPerstenceFIlter가 하는 것이다.
+    7. SecurityContext 제거(Clear()) (SecurityContextHolder.clearContext())
+    8. 응답(Response)
+
+    b. (인증 후)
+
+    1. Session에서 SecurityContext가 있는지 확인
+       → 인증이 된 이후이기에 존재한다.
+    2. SecurityContext를 꺼내어 SecurityContextHolder에 집어넣는다.
+    3. 다음 필터 수행(chain.doFilter)
+
+![1](../../images/msa/스크린샷%202022-06-20%20오후%208.15.08.png)
+
+![1](../../images/msa/스크린샷%202022-06-20%20오후%208.15.16.png)
+
+## Authentication Flow
+
+![1](../../images/msa/스크린샷%202022-06-20%20오후%208.35.11.png)
+
+1. Client 에서 로그인 요청
+2. UsernamePasswordAuthenticationFIlter에서 ID + PASSWORD를 담은 인증객체(Authentication)를 생성한다.
+3. AuthenticationManager에게 인증객체를 넘기며 인증처리를 위임한다.
+   → 내부에 한 개 이상의 Provider를 담은 List를 가지고 있고 그 List에서 적절한 Provider를 찾는다.
+4. 인증관리자(AuthenticationManager)는 적절한 Provider(AuthenticationProvider)에게 인증처리를 위임한다.
+5. 해당 Provider는 input 정보(id, password)를 가지고 실제 인증 처리 역할을 한다.
+   a. loadUserByUsername(username)메서드를 호출해서 유저객체를 요청한다.
+   b. UserDetailsService 인터페이스에게 loadUserByUsername(username) 요청
+    1. Repository에 findById() 메서드로 유저 객체 조회를 한다.
+    2. 만약, 해당 유저객체가 존재하지 않으면 UsernameNotFoundException이 발생하고 UsernamePasswordAuthenticationFIlter에서 예외를 처리한다.
+       → FailHandler()에서 후속처리
+    3. 존재한다면 UserDetails 타입으로 반환된다.(Member 객체도 UserDetails 객체로 변환되어 반환)
+6. 인증관리자(lAuthenticationManager)는 이제 Password 검증을 시작한다.
+   a. 인증객체의 Password와 반환받은 UserDetails의 Password를 비교한다.
+
+    1. 일치하지 않을 경우 BadCredentialException 발생 후 인증 실패
+
+    b. 성공한 인증객체(UserDetals와 authorities를 담은 인증 후 토큰 객체 Authentication)를 UsernamePasswordAuthenticationFilter에 전달한다.
+
+7. SecurityContext에 저장한다.
+8. 이후 전역적으로 SecurityContextHolder에서 인증객체를 사용가능하게 된다.
+
+## AuthenticationManager
+
+![1](../../images/msa/스크린샷%202022-06-20%20오후%208.49.04.png)
+
+인증 관리자(AuthenticationManager)는 필터로부터 인증처리를 지시받으면 가지고 있는 인증 처리자(AuthenticationProvider)들 중에서 현재 인증처리를 할 수 있는 Provider에게 인증처리를 위임하여 인증처리 수행 후 인증 성공을 한다면 반환받은 인증객체를 필터로 전달해준다.
+적절한 Provider를 못찾는다면 자신의 부모 객체에 저장된 ProviderManager도 검색하여 해당 인증을 처리할 수 있는 Provider가 있으면 인증처리를 위임하여 반환한다.
+
+AuthenticationManager 는 인터페이스, ProviderManager는 구현체
+ProviderManager는 AuthenticationProvider 목록 중 인증처리 요건에 맞는 적절한 Provider를 찾아 인증처리를 위임하는 클래스
+적절한 AuthenticationProvider를 찾지 못하면 부모 ProviderManager에서 AuthenticationProvider 탐색
+
+![1](../../images/msa/스크린샷%202022-06-20%20오후%2010.51.33.png)
+
+Linked 형태로 부모와 자식간의 관계를 형성할 수 있다
+자식에서 적절한 AuthenticationProvider를 찾지 못할 경우 계속 부모로 탐색하여 찾는 과정을 반복한다 AuthenticationManagerBuilder 를 사용해서 스프링 시큐리티의 초기화 과정에서 설정한 기본 Parent 관계를 변경해야 권한 필터에서 재 인증 시 모든 AuthenticationProvider 를 탐색할 수 있다
+
+## AuthenticationProvider
+
+![1](../../images/msa/스크린샷%202022-06-21%20오후%208.20.11.png)
+
+AuthenticationProvider는 인증처리의 가장 핵심적인 역할을 하는 클래스이다. 이 클래스에서 사용자의 아이디와 비밀번호를 받아서 실질적으로 검증을 하는 클래스이다.
+AuthenticationProvider 는 인터페이스이고 두 개의 메서드가 제공된다.
+
+-   authenticate(authentication) : 실제적인 인증처리를 위한 검증 메서드
+-   supports(authentication): 인증처리가 가능한 Provider인지 검사하는 메서드
+
+두 개의 메서드는 사용자가 입력한 아이디와 패스워드가 들어간 authentication객체를 가지고 로직을 수행한다.
+
+1.  아이디 검증
+    UserDetailsService 인터페이스에서 인증을 요구하는 사용자 정보를 조회한다.
+    → 존재할 경우 UserDetails 타입으로 반환한다.
+    → 존재하지 않을 경우 UserNotFoundException 발생
+2.  패스워드 검증
+    반환된 UserDetails에 저장된 password와 로그인시 입력한 패스워드(authentication.password)가 일치하는지 비교한다.
+    → 일치하지 않을 경우 BadCredentialException 발생
+    일반적으로 패스워드를 저장할 때 Password Encoder를 이용해 암호화 하여 저장하기 때문에 해당 클래스(PasswordEncoder)를 이용해 두 암호를 비교한다.
+3.  추가 검증
+    추가적으로 사용자가 정의한 검증 조건 검증
+    autheticate(authentication) 에서 검증이 모두 성공하면 최종적으로 인증객체(Authentication(user,authorities))를 생성하여 AuthenticationManager에 전달한다.
+
+## Authorization, FilterSecurityInterceptor
+
+Authorization -> 당신이 무엇이 허가 되었는지 증명하는 것
+
+인증 된 사용자가 특정 자원에 접근하고자 할 때 접근 할 자격이 되는지 증명하는 것을 인가(Authorization)이라 한다.
+
+![1](../../images/msa/스크린샷%202022-06-21%20오후%208.35.38.png)
+
+사용자가 특정 자원에 접근하고자 요청(Request)을 하면 그 사용자가 인증을 받았는지 확인한다.
+인증을 받은 사용자라면 해당 사용자의 자격(권한)이 해당 자원에 접근할 자격이 되는지 확인한다.
+
+### 스프링 시큐리티가 지원하는 권한 계층
+
+![1](../../images/msa/스크린샷%202022-06-21%20오후%208.36.31.png)
+
+1. 웹 계층
+   URL요청에 따른 메뉴 혹은 화면단위의 레벨 보안
+   → /user 경로로 자원 접근을 할 때 그 자원에 설정된 권한(ROLE_USER)과 사용자가 가진 권한을 서로 심사해서 결정하는 계층
+2. 서비스 계층
+   화면 단위가 아닌 메소드 같은 기능 단위의 레벨 보안
+   → user() 라는 메소드에 접근하고자 할 때 해당 메소드에 설정된 권한과 사용자가 가진 권한을 서로 심사해서 결정하는 계층
+3. 도메인 계층(Access Control List, 접근 제어 목록)
+   객체 단위의 레벨 보안
+   → 객체(user)를 핸들링 하고자 할 때 도메인에 설정된 권한과 사용자가 가진 권한을 서로 심사해서 결정하는 계층
+
+### FilterSecurityInterceptor
+
+마지막에 위치한 필터로써 인증된 사용자에 대해 특정 요청의 승인/거부 를 최종적으로 결정
+
+인증객체 없이 보호자원에 접근을 시도하면 AuthenticationException 발생
+
+인증 후 자원에 접근 가능한 권한이 존재하지 않을 경우 AccessDeniedException 을 발생
+
+권한 제어 방식 중 HTTP 자원의 보안을 처리하는 필터
+
+-   URL방식으로 접근할 경우 동작한다.
+
+권한 처리를 AccessDecisionManager에게 맡긴다.
+
+![1](../../images/msa/스크린샷%202022-06-21%20오후%208.39.54.png)
+
+1.  사용자가 자원 접근(Request)
+2.  FilterSecurityInterceptor에서 요청을 받아서 인증여부를 확인한다.
+    a.인증객체를 가지고 있는지 확인한다.
+    b.인증객체가 없으면(null) AuthenticationException 발생
+    c.ExceptionTranslationFilter에서 해당 예외를 받아서 다시 로그인 페이지로 이동하던가 후처리를 해준다.
+3.  인증객체가 있을 경우 SecurityMetadataSource는 자원에 접근하기 위해 설정된 권한정보를 조회해서 전달해준다.
+    a.권한 정보를 조회한다.
+    b.권한정보가 없으면(null) 권한 심사를 하지 않고 자원 접근을 허용한다.
+4.  권한 정보가 있을 경우 AccessDecisionManager 에게 권한 정보를 전달하여 위임한다.
+    → AccessDecisionManager는 최종 심의 결정자다.
+5.  AccessDecisionManager가 내부적으로 AccessDecisionVoter(심의자)를 통해서 심의 요청을 한다.
+6.  반환된 승인/거부 결과를 가지고 사용자가 해당 자원에 접근이 가능한지 판단한다.
+    a.접근이 거부되었을 경우 AccessDeniedException이 발생한다.
+    b.ExceptionTranslationFilter에서 해당 예외를 받아서 다시 로그인 페이지로 이동하던가 후처리를 해준다.
+7.  접근이 승인되었을 경우 자원 접근이 허용된다.
+
+![1](../../images/msa/스크린샷%202022-06-21%20오후%208.41.22.png)
+
+## AccessDecisionManager, AccessDecisionVoter
+
+인증 정보, 요청정보, 권한정보를 이용해서 사용자의 자원접근을 허용할 것인지 거부할 것인지를 최종 결정하는 주체
+
+여러 개의 Voter 들을 가질 수있으며 Voter 들로부터 접근허용, 거부, 보류에 해당하는 각각의 값을 리턴받고 판단 및 결정
+
+최종접근거부 시 예외 발생
+
+![1](../../images/msa/스크린샷%202022-06-22%20오후%2012.22.20.png)
+
+-   AffirmativeBased :: OR연산자와 같은 논리
+    여러개의 Voter클래스 중 하나라도 접근 허가로 결론을 내면 접근 허가로 판단한다.
+
+-   ConsensusBased:: 다수결
+    다수표(승인 및 거부)에 의해 최종 결정을 판단한다.
+    동수일 경우 기본은 접근허가이나 allowIfEqualGrantedDeniedDecisions을 false로 설정할 경우 접근 거부로 결정된다.
+
+-   UnanimousBased:: AND와 동일한 논리
+    모든 Voter가 만장일치로 접근을 승인해야 하며 그렇지 않은 경우 접근을 거부한다.
+
+**AccessDecisionVoter**
+
+판단을 심사하는 것(위원)
+
+Voter가 권한 부여 과정에서 판단하는 자료 - 아래 정보를 보고 판단
+
+-   Authenticaion - 인증정보(user)
+-   FilterInvocator - 요청 정보(antMatcher("/user"))
+-   ConfigAttributes - 권한 정보(hasRole("USER"))
+
+결정 방식 - AccessDecisionManager는 반환 받은 결정 방식을 사용해서 후처리를 한다.
+
+-   ACCESS_GRANTED: 접근 허용(1)
+-   ACCESS_DENIED: 접근 거부(-1)
+-   ACCESS_ABSTAIN: 접근 보류(0)
+    Voter가 해당 타입의 요청에 대해 결정을 내릴 수 없는 경우
+
+각각의 Voter마다 사용자의 요청마다 해당 자원에 접근할 권한이 있는지 판단 후 AccessDecisionManager에게 반환하는 역할
+
+![1](../../images/msa/스크린샷%202022-06-22%20오후%2012.27.08.png)
+
+1. FilterSecurityInterceptor 가 AccessDecisionManager에 인가처리 위임
+2. AccessDecisionManager는 자신이 가지고 있는 Voter들에게 정보decide(authentication, object, configAttributes)를 전달한다.
+3. Voter들은 정보들을 가지고 권한 판단을 심사한다.
+4. 승인,거부,보류 결정방식을 반환하면 AccessDecisionManager에서는 반환받은 결정 방식을 가지고 후처리를 한다.
+   a. 승인: FilterSecurityInterceptor에 승인여부 반환
+   b. 거부: AccessDeniedException 예외를 ExceptionTranslationFilter로 전달
+
+![1](../../images/msa/스크린샷%202022-06-22%20오후%2012.29.35.png)
+
+고려사항 : 초기화 시 생성된 특정 필터를 참조하는 방법
+
+## 스프링 시큐리티 필터 및 아키텍처 정리
+
+![1](../../images/msa/스크린샷%202022-06-22%20오후%204.15.51.png)
+
+스프링 시큐리티 초기화 과정
+
+사용자가 설정클래스에서 생성&설정한 여러 SecurityConfig클래스로 HttpSecurity에서 Filter를 생성하여 WebSecurity에 전달한다.
+
+WebSecurity는 FilterChainProxy객체에 Bean객체를 생성하여 생성자로 자신이 가지고 있는 Filter목록을 전달한다.
+
+DelegatingFilterProxy는 springSecurityFilterChain 라는 이름의 Bean을 가진 Bean Class를 찾는데 그게 FilterChainProxy다.
+→ 사용자가 요청(Request)를 하면 FilterChainProxy 에게 전달하여 요청을 위임한다.
+
+**로그인 인증시도 (인증 전)**
+
+SecurityContextPersistenceFilter
+
+1. DelegatingFilterProxy에서 FilterChainProxy에게 인증요청 위임
+2. SecurityContextPersistenceFilter 에서 loadContext 함수를 호출해 SecurityContext 가 있는지 확인한다.(이미 인증되었는지 확인)
+   → 내부적으로 HttpSessionSecurityContextRepository 클래스가 있고, SecurityContext의 생성,저장,조회,참조를 하는 클래스
+3. 새로운 SecurityContext를 저장해서 SecurityContextHolder 에 저장한 다음 다음 필터로 이동.
+
+LogoutFilter
+
+1. Logout요청을 한 것이 아니므로 다음 필터로 패스
+
+UsernamePasswordAuthenticationFilter
+
+1. 전달받은 Username + Password를 가지고 인증객체(Authentication)을 만든다.
+2. AuthenticationManager 에게 인증처리 위임
+3. AuthenticationManager 은 AuthenticationProvider 에게 실제 인증처리를 위임
+4. AuthenticationProvider 은 UserDetailsService 를 활용해서 아이디와 패스워드를 검증한다.
+5. 인증이 성공했다면 SecurityContextHolder안에 SecurityContext 에 인증에 성공한 인증객체(Authentication)를 생성및 저장한다.
+   → 여기서 SecurityContext은 SecurityContextPersistenceFilter 에서 만들어진 SecurityContext를 참조한 것이다.
+6. 인증 후 후속처리를 동시에 하게되는데, 이 과정이 SessionManagementFilter 안의 3가지 과정이다.
+   a. ConcurrentSession 에서 동시적 세션체크를 하는데 두 가지 전략을 가지고 있는데, 해당 상황에서는 첫 로그인이기에 통과.
+
+    - 이전 사용자 세션 만료 전략 : session.expireNow 로 이전 사용자의 세션을 만료시킨다.
+    - 현재 사용자 인증 시도 차단 전략: SessionAuthenticationException 예외를 발생시켜 인증을 차단한다.
+
+    b. SessionFixation (세션 고정 보호)에서 인증에 성공을 한 시점에서 새롭게 쿠키를 발급한다.
+    c. 이 사용자 정보를 SessionInfo를 만들어 저장한다.
+
+7. 인증 성공 후 후처리 로직을 수행하는데, 이 시점에서 동시에 수행되는 로직이 있다.
+   a. SecurityContextPersistenceFilter 가 최종적으로 Session에 인증객체(Authentication) 을 담은 SecurityContext를 저장.
+   b. SecurityContext를 Clear해준다.
+   c. 정의된 인증 성공 후처리 페이지로 이동한다(Ex: Root page 이동)
+
+**인증 후 특정 페이지 이동(자원 요청(Request))**
+
+SecurityContextPersistenceFilter
+
+1. loadContext 로 Session에서 SecurityContext를 꺼내온다.
+2. SecurityContextHolder에 꺼내 온 SecurityContext를 저장한다.
+3. 다음 필터로 이동
+
+LogoutFilter, UsernamePasswordAuthenticationFilter 그대로 패스
+
+ConcurrentSessionFilter
+
+1. 이 필터는 최소 두 명 이상이 동일한 계정으로 접속을 시도하는 경우에 동작한다.
+2. Session 이 만료되었는지 isExpired를 통해 확인
+3. 만료되지 않았기 때문에 다음 필터로 이동.
+
+RememberMeAuthenticationFilter
+
+현재 사용자가 세션이 만료되었거나 무효화되어 세션 내부의 인증객체(Authentication)이 비어있을 경우 동작한다.
+
+1. 사용자의 요청 정보(header)에 remember-me cookie 값을 확인한다. (없으면 동작하지 않는다.)
+
+AnonymousAuthenticationFilter
+
+사용자가 인증시도 없고 권한없이 특정 자원에 접근 시도시 동작한다.
+
+1. 인증되어있는 상태기 때문에 그냥 통과한다.
+
+SessionManagementFilter
+
+Session에 SecurityContext가 없는 경우나 Session이 없는 경우 동작한다.
+
+1. 인증 후 접근이기에 다음 필터로 이동
+
+ExceptionTranslationFilter
+
+Try Catch로 다음 필터 동작을 감싸서 FilterSecurityInterceptor수행 중 일어나는 예외를 받아서 동작한다.
+
+FilterSecurityInterceptor
+
+1. AccessDecisionVoter 에게 인가 처리 위임
+    - 인증객체가 없을경우 AuthenticationException발생하여 ExceptionTranslationFilter 에게 전달
+    - 접근이 인가되지 않을 경우 AccessDeniedException 발생하여 ExceptionTranslationFilter 에게 전달
+
+**동일 계정 다른기기 중복 로그인 - 최대 1개 세션 허용 정책**
+
+SecurityContextPersistenceFilter
+
+첫 번째 인증 사용자의 로직과 동일하게 수행
+
+LogoutFilter
+
+인증 시도이기 때문에 다음 필터로 패스
+
+UsernamePasswordAuthenticationFilter
+
+1. 인증 성공 후 SecurityContextHolder안에 인증객체(Authentication)이 저장된 SecurityContext저장
+2. ConcurrentSession 에서 정책 확인
+    - 현재 사용자 인증 시도 차단 정책: SessionAuthenticationException 예외를 발생하여 인증 처리 실패
+    - 이전 사용자 세션 만료 정책: session.expireNow 를 사용해 이전 사용자의 세션을 만료시킨 후 자신의 인증객체 저장.
+
+이전 사용자 세션 만료 정책일 경우 이 다음부터는 기존 인증 요청과 동일하게 로직 수행
+
+**동일 계정이 다른기기에서 로그인 되어 세션이 만료된 계정에서 자원 요청(Request)**
+
+ConcurrentSessionFilter
+
+1. session.isExpired를 통해 현재 세션이 만료되었는지 확인
+2. 만료되었기 때문에 Logout 로직 수행
+3. error 응답후 다음 필터 수행 없이 종료.
+
+ <script src="https://utteranc.es/client.js"
+         repo="chojs23/comments"
+         issue-term="pathname"
+         theme="github-light"
+         crossorigin="anonymous"
+         async>
+ </script>
