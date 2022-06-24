@@ -209,10 +209,11 @@ protected void configure(HttpSecurity http) throws Exception {
 ## Access Denied
 
 인증을 시도하다가 발생한 예외는 인증 필터가 받게 된다.
-하지만, 인증 성공 이후 특정 자원에 접근하려는 경우에 해당 자원에 접근권한이 없을 경우에는 인가예외가 발생하게 됩니다.
+하지만, 인증 성공 이후 특정 자원에 접근하려는 경우에 해당 자원에 접근권한이 없을 경우에는 인가예외가 발생(Access Denied)
 인가예외는 FilterSecurityInterceptor 에서 받아 ExceptionTranslationFilter로 보내게 되어 예외를 처리하게 된다.
-핵심은 인증예외 중 발생한 예외는 인증처리필터(UsernamePaswordAuthenticationFilter) 에서 처리하지만, 인가처리는 예외 발생시
-ExceptionTranslationFilter에서 처리한다는점 입니다.
+
+인증예외 중 발생한 예외는 인증처리필터(UsernamePaswordAuthenticationFilter) 에서 처리하지만, 인가처리는 예외 발생시
+ExceptionTranslationFilter에서 처리한다.
 그렇기에 AccessDeniedhandler의 구현체를 만든다.
 
 ```
