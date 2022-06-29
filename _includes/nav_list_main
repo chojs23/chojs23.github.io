@@ -71,5 +71,16 @@
                 {% endif %} {% endfor %}
             </ul>
         </li>
+
+        <li>
+            <span class="nav__sub-title">etc</span>
+            <ul>
+                {% for category in site.categories %} {% if category[0] == "etc" %}
+                <li>
+                    <a href="/categories/AWS" class="">etc({{ category[1].size }})</a>
+                </li>
+                {% endif %} {% endfor %}
+            </ul>
+        </li>
     </ul>
 </nav>
