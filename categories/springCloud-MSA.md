@@ -1,7 +1,7 @@
 ---
 title: "SpringCloud MSA"
 layout: archive
-permalink: categories/SpringCloud-MSA
+permalink: categories/springCloud-msa
 author_profile: true
 sidebar_main: true
 ---

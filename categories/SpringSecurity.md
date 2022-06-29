@@ -1,7 +1,7 @@
 ---
 title: "SpringSecurity"
 layout: archive
-permalink: categories/SpringSecurity
+permalink: categories/springsecurity
 author_profile: true
 sidebar_main: true
 ---
