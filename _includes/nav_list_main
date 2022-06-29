@@ -77,7 +77,7 @@
             <ul>
                 {% for category in site.categories %} {% if category[0] == "etc" %}
                 <li>
-                    <a href="/categories/AWS" class="">etc({{ category[1].size }})</a>
+                    <a href="/categories/etc" class="">etc({{ category[1].size }})</a>
                 </li>
                 {% endif %} {% endfor %}
             </ul>
