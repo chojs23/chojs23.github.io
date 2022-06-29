@@ -1,5 +1,5 @@
 ---
-title: "CORS 에러: The request client is not a secure context and the resource is in more-private address space `local`."
+title: "CORS 에러: The request client is not a secure context and the resource is in more-private address space 'local'."
 excerpt:
 published: true
 categories:
@@ -27,8 +27,7 @@ CORS 에러는 브라우저의 동일 출처 정책(Same-Origin Policy)을 위�
 크롬의 경우: chrome://flags/#block-insecure-private-network-requests 에 들어가서 설정 disabled
 엣지의 경우: edge://flags/#block-insecure-private-network-requests 에 들어가서 설정 disabled
 
-> 참고 : https://nankisu.tistory.com/70
-> https://wicg.github.io/private-network-access/#intro
+> 참고 : https://nankisu.tistory.com/70 > https://wicg.github.io/private-network-access/#intro
 
 <script src="https://utteranc.es/client.js"
         repo="chojs23/comments"
