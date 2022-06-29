@@ -8,8 +8,8 @@ categories:
 toc: true
 toc_sticky: true
 
-date: 2022-06-29
-last_modified_at: 2022-06-29
+date: 2022-06-30
+last_modified_at: 2022-06-30
 ---
 
 ## Deploying Java REST API Backend to AWS Elastic Beanstalk
