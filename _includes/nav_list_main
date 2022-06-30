@@ -44,7 +44,7 @@
             <ul>
                 {% for category in site.categories %} {% if category[0] == "SpringCloud-MSA" %}
                 <li>
-                    <a href="/categories/SpringCloud-MSA" class="">SpringCloud MSA ({{ category[1].size }})</a>
+                    <a href="/categories/springcloud-msa" class="">SpringCloud MSA ({{ category[1].size }})</a>
                 </li>
                 {% endif %} {% endfor %}
             </ul>
@@ -55,7 +55,7 @@
             <ul>
                 {% for category in site.categories %} {% if category[0] == "SpringSecurity" %}
                 <li>
-                    <a href="/categories/SpringSecurity" class="">SpringSecurity({{ category[1].size }})</a>
+                    <a href="/categories/springsecurity" class="">SpringSecurity({{ category[1].size }})</a>
                 </li>
                 {% endif %} {% endfor %}
             </ul>
@@ -66,7 +66,7 @@
             <ul>
                 {% for category in site.categories %} {% if category[0] == "AWS" %}
                 <li>
-                    <a href="/categories/AWS" class="">AWS({{ category[1].size }})</a>
+                    <a href="/categories/aws" class="">AWS({{ category[1].size }})</a>
                 </li>
                 {% endif %} {% endfor %}
             </ul>
