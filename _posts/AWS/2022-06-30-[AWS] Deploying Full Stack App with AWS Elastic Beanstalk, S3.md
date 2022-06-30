@@ -1,5 +1,5 @@
 ---
-title: "[AWS] Deploying Full Stack App with AWS Elastic Beanstalk & S3"
+title: "[AWS] Deploying Full Stack App with AWS Elastic Beanstalk and S3"
 excerpt:
 published: true
 categories:

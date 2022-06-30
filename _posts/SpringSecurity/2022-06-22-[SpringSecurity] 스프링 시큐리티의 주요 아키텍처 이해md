@@ -475,7 +475,7 @@ Voter가 권한 부여 과정에서 판단하는 자료 - 아래 정보를 보�
 
 스프링 시큐리티 초기화 과정
 
-사용자가 설정클래스에서 생성&설정한 여러 SecurityConfig클래스로 HttpSecurity에서 Filter를 생성하여 WebSecurity에 전달한다.
+사용자가 설정클래스에서 생성,설정한 여러 SecurityConfig클래스로 HttpSecurity에서 Filter를 생성하여 WebSecurity에 전달한다.
 
 WebSecurity는 FilterChainProxy객체에 Bean객체를 생성하여 생성자로 자신이 가지고 있는 Filter목록을 전달한다.
 
